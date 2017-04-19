@@ -8,7 +8,8 @@ var PLUGIN_NAME = 'gulp-style-modules';
 module.exports = function(opts) {
     function namefn(file) {
         // path/to/filename.css -> filename-styles
-        return path.basename(file.path, path.extname(file.path)) + '-styles';
+        var filename = path.basename(file.path, path.extname(file.path));
+        return file.path.indexOf('-') > -1 ? filename : filename + '-styles';
     }
 
     var fname = opts && opts.filename || namefn;
@@ -28,11 +29,11 @@ module.exports = function(opts) {
         var dirname = path.dirname(file.path);
 
         var res = '<dom-module id="' + moduleId + '">\n' +
-            '<template>\n' +
-            '<style>\n' +
-            file.contents.toString('utf8') + '\n' +
-            '</style>\n' +
-            '</template>\n' +
+            '\t<template>\n' +
+            '\t\t<style>\n' +
+            '\t\t\t' + file.contents.toString('utf8') + '\n' +
+            '\t\t</style>\n' +
+            '\t</template>\n' +
             '</dom-module>';
 
         file.contents = new Buffer(res);
@@ -42,4 +43,3 @@ module.exports = function(opts) {
     });
 
 };
-
